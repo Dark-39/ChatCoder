@@ -23,5 +23,20 @@
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.2.0",
     "vite": "^7.0.0"
+  },
+  "build": {
+    "appId": "com.llama.chat",
+    "files": [
+      "frontend/dist/**/*",
+      "main.js",
+      "preload.js"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "win": {
+      "sign": false
+    },
+    "sign": false
   }
 }
