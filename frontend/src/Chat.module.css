@@ -1,0 +1,47 @@
+.chatContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 1rem;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+  }
+  
+  .user {
+    text-align: right;
+    background: #e1f5fe;
+    margin: 0.25rem 0;
+    padding: 0.5rem;
+    border-radius: 8px;
+  }
+  
+  .ai {
+    text-align: left;
+    background: #f1f8e9;
+    margin: 0.25rem 0;
+    padding: 0.5rem;
+    border-radius: 8px;
+  }
+  
+  .inputArea {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  input {
+    flex: 1;
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  
