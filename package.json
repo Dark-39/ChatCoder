@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/Dark-39/ChatCoder/issues"
   },
-  "homepage": "https://github.com/Dark-39/ChatCoder#readme"
+  "homepage": "https://github.com/Dark-39/ChatCoder#readme",
+  "dependencies": {
+    "node-fetch": "^2.7.0"
+  }
 }
