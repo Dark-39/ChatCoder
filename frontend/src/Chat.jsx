@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from './Chat.module.css';
+import { useEffect, useRef } from 'react';
 
 export default function Chat() {
   const [messages, setMessages] = useState([]);
@@ -16,6 +17,13 @@ export default function Chat() {
     const aiMessage = { role: 'ai', text: response };
     setMessages(prev => [...prev, aiMessage]);
   };
+
+const bottomRef = useRef(null);
+
+useEffect(() => {
+  bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+}, [messages]);
+
 
   return (
     <div className={styles.chatContainer}>
@@ -35,6 +43,7 @@ export default function Chat() {
           placeholder="Ask Code LLaMA anything..."
         />
         <button onClick={handleSend}>Send</button>
+        <div ref={bottomRef} />
       </div>
     </div>
   );
