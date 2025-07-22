@@ -28,27 +28,51 @@ app.whenReady().then(() => {
 });
 
 const { ipcMain } = require('electron');
-const fetch = require('node-fetch'); // if not installed: npm install node-fetch
+const http = require('http'); // used to keep connection open if needed
+const fetch = require('node-fetch'); // v2 or dynamic import
 
 ipcMain.handle('prompt-to-llama', async (event, promptText) => {
-  try {
-    const response = await fetch('http://localhost:11434/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'codellama',
-        prompt: promptText,
-        stream: false
-      }),
-    });
+  const response = await fetch('http://localhost:11434/api/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'codellama',
+      prompt: promptText,
+      stream: true
+    }),
+  });
 
-    const data = await response.json();
-    return data.response || '(No response)';
-  } catch (err) {
-    console.error('Error talking to LLaMA:', err);
-    return 'Error communicating with Code LLaMA.';
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+
+  let buffer = '';
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+
+    const parts = buffer.split('\n');
+    buffer = parts.pop(); // leftover
+
+    for (const line of parts) {
+      if (line.trim().startsWith('data:')) {
+        const jsonStr = line.replace('data: ', '');
+        if (jsonStr.trim() === '[DONE]') return;
+        try {
+          const data = JSON.parse(jsonStr);
+          if (data.response) {
+            event.sender.send('llama-stream', data.response);
+          }
+        } catch (err) {
+          console.error('Failed to parse chunk', err);
+        }
+      }
+    }
   }
 });
+
+
 
 
 app.on('window-all-closed', () => {

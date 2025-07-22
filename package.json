@@ -4,12 +4,14 @@
   "description": "Ai based chatting and coding application",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm run build --prefix frontend && electron ."
+    "dev": "concurrently \"npm run vite\" \"wait-on http://localhost:5173 && electron .\" \"ollama run codellama\"",
+    "vite": "npm run dev --prefix frontend"
   },
   "devDependencies": {
+    "concurrently": "^9.2.0",
     "electron": "^30.5.1",
-    "electron-builder": "^26.0.12"
+    "electron-builder": "^26.0.12",
+    "wait-on": "^7.0.1"
   },
   "repository": {
     "type": "git",

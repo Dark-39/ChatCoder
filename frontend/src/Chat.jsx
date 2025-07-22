@@ -7,15 +7,33 @@ export default function Chat() {
 
   const handleSend = async () => {
     if (!input.trim()) return;
-
+  
     const userMessage = { role: 'user', text: input };
-    setMessages(prev => [...prev, userMessage]);
+    const aiMessage = { role: 'ai', text: '' };
+  
+    setMessages(prev => [...prev, userMessage, aiMessage]);
     setInput('');
-
-    const response = await window.electronAPI.sendPrompt(input);
-    const aiMessage = { role: 'ai', text: response };
-    setMessages(prev => [...prev, aiMessage]);
+  
+    let currentAIText = '';
+  
+    const updateStream = (e) => {
+      currentAIText = e.detail;
+      setMessages(prev => {
+        const updated = [...prev];
+        updated[updated.length - 1] = { ...updated[updated.length - 1], text: currentAIText };
+        return updated;
+      });
+    };
+  
+    window.addEventListener('ai-stream-chunk', updateStream);
+  
+    await window.electronAPI.streamPrompt(input);
+  
+    window.removeEventListener('ai-stream-chunk', updateStream);
   };
+  
+  
+  
 
   return (
     <div className={styles.chatContainer}>
